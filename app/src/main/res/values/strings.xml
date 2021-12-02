@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Fy</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="run_code">Run code</string>
+    <string name="sample_text_here">Sample text here.</string>
+    <string name="sample_code_here">Sample code here</string>
+    <string name="type_code_here">Type code here</string>
+    <string name="add_tab">Add tab</string>
+</resources>

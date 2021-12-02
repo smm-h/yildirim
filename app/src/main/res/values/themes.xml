@@ -1,0 +1,16 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Fy" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="android:statusBarColor" tools:targetApi="l">@color/passive_back</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Fy.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Fy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Fy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>

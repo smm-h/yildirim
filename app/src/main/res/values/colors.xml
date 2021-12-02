@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- basic -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFF</color>
+    <color name="transparent">#0000</color>
+
+    <!-- ui -->
+    <color name="active_back">#FFF</color>
+    <color name="active_fore">#000</color>
+    <color name="passive_back">#F0F0F0</color>
+    <color name="passive_fore">#505050</color>
+
+    <!-- cards -->
+    <color name="card_enabled_back">#FFF</color>
+    <color name="card_disabled_back">#B0808080</color>
+</resources>

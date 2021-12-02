@@ -1,0 +1,107 @@
+package ir.smmh.gebra;
+
+public class Symbols {
+
+    public static char getSymbol(String text) {
+        switch (text) {
+            case "ALPHA":
+                return 913;
+            case "BETA":
+                return 914;
+            case "GAMMA":
+                return 915;
+            case "DELTA":
+                return 916;
+            case "EPSILON":
+                return 917;
+            case "ZETA":
+                return 918;
+            case "ETA":
+                return 919;
+            case "THETA":
+                return 920;
+            case "IOTA":
+                return 921;
+            case "KAPPA":
+                return 922;
+            case "LAMBDA":
+                return 923;
+            case "MU":
+                return 924;
+            case "NU":
+                return 925;
+            case "XI":
+                return 926;
+            case "OMICRON":
+                return 927;
+            case "PI":
+                return 928;
+            case "RHO":
+                return 929;
+            case "SIGMA":
+                return 930;
+            case "TAU":
+                return 931;
+            case "UPSILON":
+                return 932;
+            case "PHI":
+                return 933;
+            case "CHI":
+                return 934;
+            case "PSI":
+                return 935;
+            case "OMEGA":
+                return 936;
+            case "alpha":
+                return 945;
+            case "beta":
+                return 946;
+            case "gamma":
+                return 947;
+            case "delta":
+                return 948;
+            case "epsilon":
+                return 949;
+            case "zeta":
+                return 950;
+            case "eta":
+                return 951;
+            case "theta":
+                return 952;
+            case "iota":
+                return 953;
+            case "kappa":
+                return 954;
+            case "lambda":
+                return 955;
+            case "mu":
+                return 956;
+            case "nu":
+                return 957;
+            case "xi":
+                return 958;
+            case "omicron":
+                return 959;
+            case "pi":
+                return 960;
+            case "rho":
+                return 961;
+            case "sigma":
+                return 962;
+            case "tau":
+                return 963;
+            case "upsilon":
+                return 964;
+            case "phi":
+                return 965;
+            case "chi":
+                return 966;
+            case "psi":
+                return 967;
+            case "omega":
+                return 968;
+            default:
+                return 0;
+        }
+    }
+}
