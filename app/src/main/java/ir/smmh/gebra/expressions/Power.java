@@ -68,8 +68,8 @@ public class Power extends Expression {
         r.addView(s);
 
         // create the total layout with base and the right side
-        final LinearExpressionView v;
-        v = new LinearExpressionView(vctx);
+        final Layout v;
+        v = new Layout(vctx);
         v.setGravity(Gravity.BOTTOM);
         v.addView(b);
         v.addView(r);

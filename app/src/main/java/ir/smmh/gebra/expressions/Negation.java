@@ -20,7 +20,7 @@ public class Negation extends Expression {
 
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
-        LinearExpressionView v = new LinearExpressionView(vctx);
+        Layout v = new Layout(vctx);
         v.addView(new Symbol(vctx, "-"));
         v.addView(operand.visualize(vctx).getView());
         return v;

@@ -22,7 +22,7 @@ public class Summation extends Expression {
 
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
-        LinearExpressionView v = new LinearExpressionView(vctx);
+        Layout v = new Layout(vctx);
         boolean firstTime = true;
         for (final Expression e : children) {
             final boolean n = e instanceof Negation;

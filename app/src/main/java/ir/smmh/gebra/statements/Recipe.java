@@ -24,17 +24,17 @@ public class Recipe extends Statement {
     }
 
     @Override
-    public int execute(final StatementView sv) {
-        int status;
+    public Status execute(final StatementView sv) {
+        Status status;
         String answer = "?";
         try {
             answer = DoubleValue.toText(expression.evaluate(ectx));
-            status = 1;
+            status = Status.NO_ERROR;
         } catch (EvaluationError ee) {
-            status = 2;
+            status = Status.EVAL_ERROR;
             Util.toast(Util.getMainActivity(), ee.getMessage());
         } catch (Exception e) {
-            status = 0;
+            status = Status.JAVA_ERROR;
             e.printStackTrace();
         }
         if (sv != null) {

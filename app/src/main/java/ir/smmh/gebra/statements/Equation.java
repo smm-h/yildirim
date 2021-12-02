@@ -1,5 +1,7 @@
 package ir.smmh.gebra.statements;
 
+import androidx.annotation.Nullable;
+
 import ir.smmh.gebra.EvaluationContext;
 import ir.smmh.gebra.Expression;
 import ir.smmh.gebra.Statement;
@@ -16,8 +18,8 @@ public class Equation extends Statement {
     }
 
     @Override
-    public int execute(final StatementView sv) {
-        return 0;
+    public Status execute(@Nullable final StatementView sv) {
+        return null;
     }
 
     @Override

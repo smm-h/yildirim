@@ -56,7 +56,7 @@ public abstract class Brackets extends Expression {
         // PAINT.setShadowLayer(PADDING / 2, 0, 0, Color.BLACK);
     }
 
-    private class BracketsView extends LinearExpressionView {
+    private class BracketsView extends Layout {
 
         private final View coreView;
 

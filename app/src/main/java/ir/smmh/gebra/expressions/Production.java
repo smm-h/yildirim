@@ -22,7 +22,7 @@ public class Production extends Expression {
 
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
-        LinearExpressionView v = new LinearExpressionView(vctx);
+        Layout v = new Layout(vctx);
         for (Expression e : children) {
             v.addView(e.visualize(vctx).getView());
         }

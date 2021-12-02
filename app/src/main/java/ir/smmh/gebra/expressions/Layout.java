@@ -8,11 +8,11 @@ import ir.smmh.gebra.Expression;
 import ir.smmh.gebra.Gebra;
 import ir.smmh.gebra.VisualizationContext;
 
-public class LinearExpressionView extends LinearLayout implements Expression.ExpressionView {
+public class Layout extends LinearLayout implements Expression.ExpressionView {
 
     private final VisualizationContext vctx;
 
-    public LinearExpressionView(final VisualizationContext vctx) {
+    public Layout(final VisualizationContext vctx) {
         super(vctx.androidContext);
         this.vctx = vctx;
         setGravity(Gravity.CENTER);

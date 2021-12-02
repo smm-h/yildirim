@@ -20,14 +20,31 @@ import ir.smmh.gebra.statements.Recipe;
  */
 public abstract class Statement {
 
-    private int status = 2;
+    public enum Status {
+        NOT_EXECUTED_YET, NO_ERROR, EVAL_ERROR, JAVA_ERROR;
+
+        private int getColor() {
+            switch (this) {
+                case NOT_EXECUTED_YET:
+                    return Color.YELLOW;
+                case NO_ERROR:
+                    return Color.GREEN;
+                case JAVA_ERROR:
+                    return Color.BLUE;
+                default:
+                    return Color.RED;
+            }
+        }
+    }
+
+    private Status status = Status.NOT_EXECUTED_YET;
     public final EvaluationContext ectx;
 
     public Statement(final EvaluationContext ectx) {
         this.ectx = ectx;
     }
 
-    public abstract int execute(@Nullable StatementView sv);
+    public abstract Status execute(@Nullable StatementView sv);
 
     public abstract StatementView visualize(final VisualizationContext vctx);
 
@@ -36,19 +53,7 @@ public abstract class Statement {
         protected static final int STATUS_BAR_WIDTH = Util.dipToPixel(2);
         protected static final int STATUS_BAR_MARGIN = Util.dipToPixel(8);
 
-        private static final Paint[] PAINTS = new Paint[3];
-
-        static {
-            PAINTS[0] = new Paint();
-            PAINTS[0].setColor(Color.RED);
-            PAINTS[0].setStyle(Paint.Style.FILL);
-            PAINTS[1] = new Paint();
-            PAINTS[1].setColor(Color.GREEN);
-            PAINTS[1].setStyle(Paint.Style.FILL);
-            PAINTS[2] = new Paint();
-            PAINTS[2].setColor(Color.YELLOW);
-            PAINTS[2].setStyle(Paint.Style.FILL);
-        }
+        private final Paint paint;
 
         public final Statement core;
 
@@ -59,15 +64,18 @@ public abstract class Statement {
             setLayoutParams(Gebra.WRAP_BOTH);
             setGravity(Gravity.CENTER_VERTICAL);
             setOnClickListener(v -> {
-                core.execute(this);
+                core.status = core.execute(this);
                 invalidate();
             });
+            paint = new Paint();
+            paint.setStyle(Paint.Style.FILL);
         }
 
         @Override
         protected void onDraw(final Canvas canvas) {
             super.onDraw(canvas);
-            canvas.drawRect(0, 0, STATUS_BAR_WIDTH, getWidth(), PAINTS[core.status]);
+            paint.setColor(core.status.getColor());
+            canvas.drawRect(0, 0, STATUS_BAR_WIDTH, getWidth(), paint);
         }
     }
 }
