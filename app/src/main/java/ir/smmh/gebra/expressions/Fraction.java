@@ -21,16 +21,19 @@ public class Fraction extends Expression {
     public Fraction(final Expression p, final Expression q) {
         this.p = p;
         this.q = q;
+        children.add(p);
+        children.add(q);
     }
 
     @Override
     public double evaluate(final EvaluationContext ectx) throws EvaluationError {
-        double qv = q.evaluate(ectx);
-        if (qv == 0) {
-            throw new EvaluationError("Cannot divide by zero");
-        } else {
-            return p.evaluate(ectx) / qv;
-        }
+        return p.evaluate(ectx) / q.evaluate(ectx);
+        // double qv = q.evaluate(ectx);
+        // if (qv == 0) {
+        //     throw new EvaluationError("Cannot divide by zero");
+        // } else {
+        //     return p.evaluate(ectx) / qv;
+        // }
     }
 
     private static final int HR_HEIGHT, HR_ADDITIONAL_WIDTH;

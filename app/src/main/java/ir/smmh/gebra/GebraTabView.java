@@ -8,6 +8,7 @@ import ir.smmh.gebra.expressions.Fraction;
 import ir.smmh.gebra.expressions.Negation;
 import ir.smmh.gebra.expressions.Power;
 import ir.smmh.gebra.expressions.Production;
+import ir.smmh.gebra.expressions.Root;
 import ir.smmh.gebra.expressions.Summation;
 import ir.smmh.gebra.expressions.Text;
 import ir.smmh.gebra.expressions.Variable;
@@ -21,14 +22,15 @@ public class GebraTabView extends TabView {
 
         VisualizationContext vctx = new VisualizationContext(context, 1);
 
-        addView(new Text(vctx, "Hello, world!"));
+        // addView(new Text(vctx, "Hello, world!"));
 
         EvaluationContext ectx = new EvaluationContext.Default();
 
         // Expression e = frac(d(10), d(5));
-        // Expression e = fracR(5);
-        Expression e = s(p(d(2), pow(v("alpha"), s(d(2), v("pi")))), neg(p(d(3), v("beta"))), v("epsilon"));
-        // Expression e2 = pow(d(2500), e);
+        Expression e = fracR(5);
+        Expression e2 = s(p(d(2), pow(v("alpha"), s(d(2), v("pi")))), neg(p(d(3), v("beta"))), v(
+            "epsilon"));
+        // Expression e = root(d(25), d(2));
         addView(e.getEvaluation(ectx).visualize(vctx));
 
         // Expression e = new Variable("alpha");
@@ -68,6 +70,10 @@ public class GebraTabView extends TabView {
 
     Expression pow(Expression b, Expression p) {
         return new Power(b, p);
+    }
+
+    Expression root(Expression b, Expression p) {
+        return new Root(b, p);
     }
 
     Expression neg(Expression o) {
