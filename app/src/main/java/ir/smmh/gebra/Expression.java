@@ -5,12 +5,13 @@ import android.view.View;
 import java.util.LinkedList;
 import java.util.List;
 
-import ir.smmh.gebra.expressions.Brackets;
+import ir.smmh.gebra.expressions.Bracket;
 import ir.smmh.gebra.expressions.DoubleValue;
 import ir.smmh.gebra.expressions.Power;
 import ir.smmh.gebra.expressions.Production;
 import ir.smmh.gebra.expressions.Summation;
 import ir.smmh.gebra.expressions.Variable;
+import ir.smmh.gebra.expressions.Wrapped;
 import ir.smmh.gebra.statements.Recipe;
 
 /**
@@ -19,7 +20,7 @@ import ir.smmh.gebra.statements.Recipe;
  * @see Production
  * @see Variable
  * @see DoubleValue
- * @see Brackets
+ * @see Wrapped
  * @see Power
  */
 public abstract class Expression {
@@ -58,13 +59,25 @@ public abstract class Expression {
         }
     }
 
-    public Expression wrap() {
-        return new Brackets(this, Brackets.Type.CURVED) {
-            @Override
-            public double evaluate(final EvaluationContext ectx) throws EvaluationError {
-                return getCore().evaluate(ectx);
-            }
-        };
+    private static final Bracket PARENTHESES = Bracket.of('(');
+    private static final Bracket ELL = Bracket.of('L');
+    private static final Bracket UPSIDE_DOWN_ELL = Bracket.of('L').flipY();
+    private static final Bracket BAR = Bracket.of('|');
+
+    public Expression parenthesize() {
+        return new Wrapped(this, PARENTHESES, x -> x);
+    }
+
+    public Expression floor() {
+        return new Wrapped(this, ELL, Math::floor);
+    }
+
+    public Expression ceil() {
+        return new Wrapped(this, UPSIDE_DOWN_ELL, Math::ceil);
+    }
+
+    public Expression abs() {
+        return new Wrapped(this, BAR, Math::abs);
     }
 
     public abstract ExpressionView visualize(final VisualizationContext vctx);

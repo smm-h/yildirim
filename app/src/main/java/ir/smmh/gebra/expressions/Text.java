@@ -1,7 +1,6 @@
 package ir.smmh.gebra.expressions;
 
 import android.annotation.SuppressLint;
-import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.view.View;
 import android.widget.TextView;

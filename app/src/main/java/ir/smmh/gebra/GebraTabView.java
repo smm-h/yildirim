@@ -31,7 +31,8 @@ public class GebraTabView extends TabView {
         add(s(p(d(2), pow(v("alpha"), s(d(2), v("pi")))), neg(p(d(3), v("beta"))), v("epsilon")));
         add(root(d(25), d(2)));
         add(s(d(1), d(2), d(3), d(4)));
-        add(p(d(1), d(2), d(3), d(4)));
+        // add(p(d(1), d(2), d(3), d(4)));
+        add(s(d(1.6).ceil(), d(-2).abs(), frac(v("pi"), d(2)).floor()));
         add("More coming soon!");
     }
 

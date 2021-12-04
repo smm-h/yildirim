@@ -10,181 +10,76 @@ import ir.smmh.fy.Util;
 import ir.smmh.gebra.Expression;
 import ir.smmh.gebra.VisualizationContext;
 
-public abstract class Brackets extends Expression {
+public class Brackets extends Layout {
 
-    private static final float THICKNESS = Util.dipToPixel(1);
-    private static final float PADDING = Util.dipToPixel(3);
-
-    public enum Type {
-        ANGLE, CURLY, CURVED, SQUARE
-    }
-
-    private final Expression core;
-    private final Type type;
-    private final float ratio;
-
-    public Brackets(final Expression core, final Type type) {
-        this.core = core;
-        this.type = type;
-        children.add(core);
-        ratio = getDefaultRatio();
-    }
-
-    private float getDefaultRatio() {
-        switch (type) {
-            case ANGLE:
-                return 0.25f;
-            case CURLY:
-                return 0.3f;
-            case CURVED:
-                return 0.4f;
-            case SQUARE:
-                return 0.2f;
-            default:
-                return 0.31f;
-        }
-    }
-
+    private static final float THICKNESS;
+    private static final float PADDING;
     private static final Paint PAINT;
+    private static final float ADDITIONAL_H;
 
     static {
+        THICKNESS = Util.dipToPixel(1);
+        PADDING = Util.dipToPixel(3);
         PAINT = new Paint();
         PAINT.setStrokeWidth(THICKNESS);
         PAINT.setStyle(Paint.Style.STROKE);
         PAINT.setColor(Util.colorAddAlpha(Util.getColor(Util.getMainActivity(), R.color.passive_fore), 127));
         PAINT.setAntiAlias(true);
-        // PAINT.setShadowLayer(PADDING / 2, 0, 0, Color.BLACK);
+        ADDITIONAL_H = Util.dipToPixel(8);
     }
 
-    private static final float ADDITIONAL_H = Util.dipToPixel(8);
+    private final Expression.ExpressionView coreView;
 
-    private class BracketsView extends Layout {
+    Brackets(final VisualizationContext vctx, final Expression core, final Bracket open) {
+        this(vctx, core, open, open.flipX());
+    }
 
-        private final ExpressionView coreView;
-
-        BracketsView(final VisualizationContext vctx, final Expression core) {
-            super(vctx);
-            coreView = core.visualize(vctx);
-            addView(new Bracket(true));
-            addView(coreView.getView());
-            addView(new Bracket(false));
-        }
-
-        @Override
-        public float getRestingY() {
-            return coreView.getRestingY() + ADDITIONAL_H / 2;
-        }
-
-        private class Bracket extends View {
-            private final boolean open;
-            private final Path path;
-            private float prev_w, prev_h;
-
-            public Bracket(final boolean open) {
-                super(coreView.getVisualizationContext().androidContext);
-                this.open = open;
-                setWillNotDraw(false);
-                path = new Path();
-            }
-
-            @Override
-            protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-                final float w, h;
-                final View v = coreView.getView();
-                v.measure(-2, -2);
-                h = v.getMeasuredHeight() + ADDITIONAL_H;
-                w = ((h - PADDING * 2) * ratio) + PADDING * 2;
-                setMeasuredDimension((int) w, (int) h);
-            }
-
-            @Override
-            protected void onDraw(final Canvas canvas) {
-                super.onDraw(canvas);
-                update(getWidth(), getHeight());
-                canvas.drawPath(path, PAINT);
-            }
-
-            private void update(final float curr_w, final float curr_h) {
-                if (curr_w != prev_w || curr_h != prev_h) {
-                    prev_w = curr_w;
-                    prev_h = curr_h;
-                    final float x = PADDING;
-                    final float y = PADDING;
-                    final float w = curr_w - PADDING * 2;
-                    final float h = curr_h - PADDING * 2;
-                    path.reset();
-                    switch (type) {
-                        case ANGLE: {
-                            if (open) {
-                                path.moveTo(x + w, y);
-                                path.lineTo(x, y + h / 2);
-                                path.lineTo(x + w, y + h);
-                            } else {
-                                path.moveTo(x, y);
-                                path.lineTo(x + w, y + h / 2);
-                                path.lineTo(x, y + h);
-                            }
-                            break;
-                        }
-                        case CURLY: {
-                            final float q = w / 2;
-                            if (open) {
-                                path.moveTo(x + w, y);
-                                path.quadTo(x + q, y, x + q, y + q);
-                                path.lineTo(x + q, y + h / 2 - q);
-                                path.quadTo(x + q, y + h / 2, x, y + h / 2);
-                                path.quadTo(x + q, y + h / 2, x + q, y + h / 2 + q);
-                                path.lineTo(x + q, y + h - q);
-                                path.quadTo(x + q, y + h, x + w, y + h);
-                            } else {
-                                path.moveTo(x, y);
-                                path.quadTo(x + q, y, x + q, y + q);
-                                path.lineTo(x + q, y + h / 2 - q);
-                                path.quadTo(x + q, y + h / 2, x + w, y + h / 2);
-                                path.quadTo(x + q, y + h / 2, x + q, y + h / 2 + q);
-                                path.lineTo(x + q, y + h - q);
-                                path.quadTo(x + q, y + h, x, y + h);
-                            }
-                        }
-                        break;
-                        case CURVED: {
-                            if (open) {
-                                path.moveTo(x + w, y);
-                                path.quadTo(x, y + h / 2, x + w, y + h);
-                            } else {
-                                path.moveTo(x, y);
-                                path.quadTo(x + w, y + h / 2, x, y + h);
-                            }
-                        }
-                        break;
-                        case SQUARE: {
-                            final float x1 = x; // + w * 1 / 3;
-                            final float x2 = x + w; // * 2 / 3;
-                            if (open) {
-                                path.moveTo(x2, y);
-                                path.lineTo(x1, y);
-                                path.lineTo(x1, y + h);
-                                path.lineTo(x2, y + h);
-                            } else {
-                                path.moveTo(x1, y);
-                                path.lineTo(x2, y);
-                                path.lineTo(x2, y + h);
-                                path.lineTo(x1, y + h);
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-        }
+    Brackets(final VisualizationContext vctx, final Expression core, final Bracket open, final Bracket close) {
+        super(vctx);
+        coreView = core.visualize(vctx);
+        addView(new BracketView(open));
+        addView(coreView.getView());
+        addView(new BracketView(close));
     }
 
     @Override
-    public ExpressionView visualize(final VisualizationContext vctx) {
-        return new BracketsView(vctx, core);
+    public float getRestingY() {
+        return coreView.getRestingY() + ADDITIONAL_H / 2;
     }
 
-    public Expression getCore() {
-        return core;
+    private class BracketView extends View {
+        private final Bracket pattern;
+        private final Path path;
+        private float prev_w, prev_h;
+
+        public BracketView(final Bracket pattern) {
+            super(coreView.getVisualizationContext().androidContext);
+            this.pattern = pattern;
+            setWillNotDraw(false);
+            path = new Path();
+        }
+
+        @Override
+        protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
+            final float w, h;
+            final View v = coreView.getView();
+            v.measure(-2, -2);
+            h = v.getMeasuredHeight() + ADDITIONAL_H;
+            w = ((h - PADDING * 2) * pattern.ratio) + PADDING * 2;
+            setMeasuredDimension((int) w, (int) h);
+        }
+
+        @Override
+        protected void onDraw(final Canvas canvas) {
+            super.onDraw(canvas);
+            final int w = getWidth();
+            final int h = getHeight();
+            if (prev_w != w || prev_h != h) {
+                prev_w = w;
+                prev_h = h;
+                pattern.shapePath(path, PADDING, PADDING, w - PADDING * 2, h - PADDING * 2);
+            }
+            canvas.drawPath(path, PAINT);
+        }
     }
 }

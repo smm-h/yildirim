@@ -1,10 +1,5 @@
 package ir.smmh.gebra.expressions;
 
-import android.view.View;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import ir.smmh.gebra.EvaluationContext;
 import ir.smmh.gebra.EvaluationError;
 import ir.smmh.gebra.Expression;

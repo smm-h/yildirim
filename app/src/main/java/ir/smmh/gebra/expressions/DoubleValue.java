@@ -1,7 +1,5 @@
 package ir.smmh.gebra.expressions;
 
-import java.util.Objects;
-
 import ir.smmh.gebra.EvaluationContext;
 import ir.smmh.gebra.EvaluationError;
 import ir.smmh.gebra.Expression;

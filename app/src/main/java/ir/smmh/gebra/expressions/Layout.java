@@ -1,6 +1,5 @@
 package ir.smmh.gebra.expressions;
 
-import android.graphics.Canvas;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;

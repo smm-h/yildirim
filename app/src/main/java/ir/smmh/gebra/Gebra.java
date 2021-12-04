@@ -43,4 +43,8 @@ public class Gebra {
     public static final DoubleValue _10 = new DoubleValue(10);
     public static final DoubleValue _11 = new DoubleValue(11);
     public static final DoubleValue _12 = new DoubleValue(12);
+
+    public interface Effect {
+        double affect(double x);
+    }
 }
