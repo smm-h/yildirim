@@ -37,14 +37,11 @@ public class Fraction extends Expression {
     }
 
     private static final int HR_HEIGHT, HR_ADDITIONAL_WIDTH;
-    private static final Paint HR_PAINT;
     // private static final LinearLayout.LayoutParams HR_LP;
 
     static {
         HR_ADDITIONAL_WIDTH = Util.dipToPixel(12);
         HR_HEIGHT = Util.dipToPixel(4);
-        HR_PAINT = new Paint();
-        HR_PAINT.setColor(Util.getColor(Util.getMainActivity(), R.color.passive_fore));
         // HR_LP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, HR_HEIGHT);
     }
 
@@ -72,7 +69,7 @@ public class Fraction extends Expression {
         protected void onDraw(final Canvas canvas) {
             final float x = HR_ADDITIONAL_WIDTH / 4f;
             final float y = HR_HEIGHT / 2f;
-            canvas.drawLine(x, y, w - x, y, HR_PAINT);
+            canvas.drawLine(x, y, w - x, y, Gebra.PAINT);
         }
     }
 

@@ -121,7 +121,7 @@ public class Root extends Expression {
                 canvas.drawPath(path, PAINT);
             }
         };
-        v.setWillNotDraw(false);
+
         v.setGravity(Gravity.BOTTOM);
         v.addView(l);
         v.addView(m);

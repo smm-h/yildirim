@@ -18,7 +18,6 @@ public abstract class Layout extends LinearLayout implements Expression.Expressi
         setGravity(Gravity.CENTER);
         setLayoutParams(Gebra.WRAP_BOTH);
         setWillNotDraw(false);
-        // setTranslationY(getRestingY());
     }
 
     @Override

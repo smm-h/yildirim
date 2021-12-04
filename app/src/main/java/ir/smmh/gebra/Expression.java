@@ -65,19 +65,19 @@ public abstract class Expression {
     private static final Bracket BAR = Bracket.of('|');
 
     public Expression parenthesize() {
-        return new Wrapped(this, PARENTHESES, x -> x);
+        return new Wrapped.InBrackets(this, x -> x, PARENTHESES);
     }
 
     public Expression floor() {
-        return new Wrapped(this, ELL, Math::floor);
+        return new Wrapped.InBrackets(this, Math::floor, ELL);
     }
 
     public Expression ceil() {
-        return new Wrapped(this, UPSIDE_DOWN_ELL, Math::ceil);
+        return new Wrapped.InBrackets(this, Math::ceil, UPSIDE_DOWN_ELL);
     }
 
     public Expression abs() {
-        return new Wrapped(this, BAR, Math::abs);
+        return new Wrapped.InBrackets(this, Math::abs, BAR);
     }
 
     public abstract ExpressionView visualize(final VisualizationContext vctx);

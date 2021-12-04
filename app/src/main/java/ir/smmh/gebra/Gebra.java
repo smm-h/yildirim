@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.widget.LinearLayout;
 
+import ir.smmh.fy.R;
+import ir.smmh.fy.Util;
 import ir.smmh.gebra.expressions.DoubleValue;
 
 /**
@@ -20,12 +22,25 @@ public class Gebra {
 
     public static final LinearLayout.LayoutParams WRAP_BOTH;
 
-    public static final Paint DEBUG_PAINT;
+    // public static final Paint DEBUG_PAINT;
+
+    public static final Paint PAINT;
+
+    private static final float THICKNESS;
 
     static {
         WRAP_BOTH = new LinearLayout.LayoutParams(-2, -2);
-        DEBUG_PAINT = new Paint();
-        DEBUG_PAINT.setColor(Color.RED);
+        // DEBUG_PAINT = new Paint();
+        // DEBUG_PAINT.setColor(Color.RED);
+
+        THICKNESS = Util.dipToPixel(1);
+
+        PAINT = new Paint();
+        PAINT.setStrokeWidth(THICKNESS);
+        PAINT.setStyle(Paint.Style.STROKE);
+        // PAINT.setColor(Util.getColor(Util.getMainActivity(), R.color.passive_fore));
+        PAINT.setColor(Util.colorAddAlpha(Util.getColor(Util.getMainActivity(), R.color.passive_fore), 127));
+        PAINT.setAntiAlias(true);
     }
 
     public static final DoubleValue _n2 = new DoubleValue(-2);
