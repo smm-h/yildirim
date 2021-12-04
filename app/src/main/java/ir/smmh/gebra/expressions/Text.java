@@ -1,6 +1,7 @@
 package ir.smmh.gebra.expressions;
 
 import android.annotation.SuppressLint;
+import android.graphics.Canvas;
 import android.graphics.Typeface;
 import android.view.View;
 import android.widget.TextView;
@@ -19,7 +20,7 @@ public class Text extends TextView implements Expression.ExpressionView {
         super(vctx.androidContext);
         this.vctx = vctx;
         setTypeface(Typeface.SANS_SERIF);
-        setTextSize(Util.dipToPixel(8 * vctx.scale));
+        setTextSize(Util.dipToPixel(5 * vctx.scale));
         setLayoutParams(Gebra.WRAP_BOTH);
         setText(text);
     }
@@ -33,4 +34,23 @@ public class Text extends TextView implements Expression.ExpressionView {
     public VisualizationContext getVisualizationContext() {
         return vctx;
     }
+
+    @Override
+    public float getRestingY() {
+        return getMeasuredHeight() * 0.527f;
+    }
+
+    // @Override
+    // protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
+    //     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    //     // float mh = getMeasuredHeight();
+    //     // setTranslationY(-getRestingY());
+    // }
+
+    // @Override
+    // protected void onDraw(final Canvas canvas) {
+    //     super.onDraw(canvas);
+    //     final float y = getRestingY();
+    //     canvas.drawLine(0, y, getWidth(), y, Gebra.DEBUG_PAINT);
+    // }
 }

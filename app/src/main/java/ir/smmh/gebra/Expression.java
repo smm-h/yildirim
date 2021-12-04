@@ -74,7 +74,7 @@ public abstract class Expression {
     }
 
     public interface ExpressionView {
-        int getHeight();
+        float getRestingY();
 
         VisualizationContext getVisualizationContext();
 

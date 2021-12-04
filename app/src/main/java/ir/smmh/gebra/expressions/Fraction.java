@@ -87,7 +87,13 @@ public class Fraction extends Expression {
         int mw = Math.max(pv.getMeasuredWidth(), qv.getMeasuredWidth());
         HorizontalRule hr = new HorizontalRule(vctx.androidContext, mw);
 
-        Layout v = new Layout(vctx);
+        final float restingY = pv.getMeasuredHeight() + HR_HEIGHT / 2f;
+        final Layout v = new Layout(vctx) {
+            @Override
+            public float getRestingY() {
+                return restingY;
+            }
+        };
         v.setOrientation(LinearLayout.VERTICAL);
         v.addView(pv);
         v.addView(hr);

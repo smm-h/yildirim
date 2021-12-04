@@ -1,6 +1,9 @@
 package ir.smmh.gebra.expressions;
 
+import java.util.Objects;
+
 import ir.smmh.gebra.EvaluationContext;
+import ir.smmh.gebra.EvaluationError;
 import ir.smmh.gebra.Expression;
 import ir.smmh.gebra.VisualizationContext;
 
@@ -12,7 +15,7 @@ public final class DoubleValue extends Expression {
     }
 
     @Override
-    public double evaluate(EvaluationContext ectx) {
+    public double evaluate(final EvaluationContext ectx) throws EvaluationError {
         return value;
     }
 
@@ -28,5 +31,20 @@ public final class DoubleValue extends Expression {
 
     public static String toText(double value) {
         return Math.round(value) == value ? Long.toString((long) value) : Double.toString(value);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final DoubleValue that = (DoubleValue) o;
+        return Double.compare(that.value, value) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Double.hashCode(value);
     }
 }

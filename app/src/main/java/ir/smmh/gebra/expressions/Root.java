@@ -13,6 +13,7 @@ import ir.smmh.fy.Util;
 import ir.smmh.gebra.EvaluationContext;
 import ir.smmh.gebra.EvaluationError;
 import ir.smmh.gebra.Expression;
+import ir.smmh.gebra.Gebra;
 import ir.smmh.gebra.VisualizationContext;
 
 public class Root extends Expression {
@@ -51,56 +52,68 @@ public class Root extends Expression {
         float f = SCALE_START;
 
         // visualize base and measure its height
-        final View b;
-        b = base.visualize(vctx).getView();
-        b.measure(-2, -2);
-        final int bh = b.getMeasuredHeight();
+        final ExpressionView bev = base.visualize(vctx);
+        final View bv = bev.getView();
+        bv.measure(-2, -2);
+        final int bh = bv.getMeasuredHeight();
 
-        // visualize power and measure its height until its height is lower than base's
-        View p;
+        View pv;
         int ph;
-        do {
-            p = power.visualize(vctx.multiplyScaleBy(f)).getView();
-            p.measure(-2, -2);
-            ph = p.getMeasuredHeight();
-            f -= SCALE_STEP;
-        } while (bh < ph && f >= SCALE_END); // or we reach too small a de-scaling
+        if (power.equals(Gebra._2)) {
+            pv = new Space(vctx.androidContext);
+            ph = 0;
+        } else {
+            // visualize power and measure its height until its height is lower than base's
+            do {
+                pv = power.visualize(vctx.multiplyScaleBy(f)).getView();
+                pv.measure(-2, -2);
+                ph = pv.getMeasuredHeight();
+                f -= SCALE_STEP;
+            } while (bh < ph && f >= SCALE_END); // or we reach too small a de-scaling
+        }
 
         // determine space height
         final int sh = bh > ph ? bh - ph : (int) (bh * SCALE_END);
 
         // create the space below power
-        final Space s;
-        s = new Space(vctx.androidContext);
+        final Space s = new Space(vctx.androidContext);
         s.setMinimumHeight(sh);
 
         // create the left side layout with power and its space
-        final LinearLayout l;
-        l = new LinearLayout(vctx.androidContext);
+        final LinearLayout l = new LinearLayout(vctx.androidContext);
         l.setOrientation(LinearLayout.VERTICAL);
-        l.addView(p);
+        l.addView(pv);
         l.addView(s);
 
         // create the space between children
-        final Space m;
-        m = new Space(vctx.androidContext);
+        final Space m = new Space(vctx.androidContext);
         m.setMinimumWidth(H_SPACING);
 
         final Path path = new Path();
-        final int xj = p.getMeasuredWidth();
-        final int yj = p.getMeasuredHeight();
-        final int xm = xj + (sh * H_SPACING) / (b.getMeasuredHeight() + sh);
+        final int xj = pv.getMeasuredWidth();
+        final int yj = pv.getMeasuredHeight();
+        final int xm = xj + (sh * H_SPACING) / (bv.getMeasuredHeight() + sh);
         final int xo = xj + H_SPACING;
-        final int yoc = -b.getMeasuredWidth();
+        final int yoc = -bv.getMeasuredWidth();
+
+        final float restingY = bev.getRestingY();
 
         // create the total layout with base and the right side
-        final Layout v;
-        v = new Layout(vctx) {
+        final Layout v = new Layout(vctx) {
+
+            @Override
+            public float getRestingY() {
+                return restingY;
+            }
+
             @Override
             protected void onDraw(final Canvas canvas) {
+                final int x0, y0;
+                x0 = Math.max(0, xj - Util.dipToPixel(5));
+                y0 = Util.dipToPixel(3);
                 final int yo = getHeight() + yoc;
                 path.reset();
-                path.moveTo(0, yj);
+                path.moveTo(x0, yj + y0);
                 path.lineTo(xj, yj);
                 path.lineTo(xm, getHeight());
                 path.lineTo(xo, yo);
@@ -112,7 +125,7 @@ public class Root extends Expression {
         v.setGravity(Gravity.BOTTOM);
         v.addView(l);
         v.addView(m);
-        v.addView(b);
+        v.addView(bv);
 
         // and return it
         return v;

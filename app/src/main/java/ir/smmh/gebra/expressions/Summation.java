@@ -1,5 +1,7 @@
 package ir.smmh.gebra.expressions;
 
+import android.view.View;
+
 import ir.smmh.gebra.EvaluationContext;
 import ir.smmh.gebra.EvaluationError;
 import ir.smmh.gebra.Expression;
@@ -22,17 +24,18 @@ public class Summation extends Expression {
 
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
-        Layout v = new Layout(vctx);
+        final ListLayout layout = new ListLayout(vctx);
         boolean firstTime = true;
-        for (final Expression e : children) {
-            final boolean n = e instanceof Negation;
+        for (final Expression expression : children) {
+            final boolean n = expression instanceof Negation;
+            View view = (n ? ((Negation) expression).operand : expression).visualize(vctx).getView();
             if (firstTime) {
                 firstTime = false;
             } else {
-                v.addView(new Symbol(vctx, n ? "-" : "+"));
+                layout.addView(new Symbol(vctx, n ? "-" : "+"));
             }
-            v.addView((n ? ((Negation) e).operand : e).visualize(vctx).getView());
+            layout.addView(view);
         }
-        return v;
+        return layout;
     }
 }

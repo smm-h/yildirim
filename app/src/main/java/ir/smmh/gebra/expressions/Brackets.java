@@ -56,16 +56,23 @@ public abstract class Brackets extends Expression {
         // PAINT.setShadowLayer(PADDING / 2, 0, 0, Color.BLACK);
     }
 
+    private static final float ADDITIONAL_H = Util.dipToPixel(8);
+
     private class BracketsView extends Layout {
 
-        private final View coreView;
+        private final ExpressionView coreView;
 
         BracketsView(final VisualizationContext vctx, final Expression core) {
             super(vctx);
-            coreView = core.visualize(vctx).getView();
+            coreView = core.visualize(vctx);
             addView(new Bracket(true));
-            addView(coreView);
+            addView(coreView.getView());
             addView(new Bracket(false));
+        }
+
+        @Override
+        public float getRestingY() {
+            return coreView.getRestingY() + ADDITIONAL_H / 2;
         }
 
         private class Bracket extends View {
@@ -74,7 +81,7 @@ public abstract class Brackets extends Expression {
             private float prev_w, prev_h;
 
             public Bracket(final boolean open) {
-                super(coreView.getContext());
+                super(coreView.getVisualizationContext().androidContext);
                 this.open = open;
                 setWillNotDraw(false);
                 path = new Path();
@@ -82,10 +89,11 @@ public abstract class Brackets extends Expression {
 
             @Override
             protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-                coreView.measure(-2, -2);
                 final float w, h;
-                h = coreView.getMeasuredHeight() * 1.1f;
-                w = ((h - PADDING * 2) * ratio) + PADDING * 2; // RATIO[type.ordinal()])
+                final View v = coreView.getView();
+                v.measure(-2, -2);
+                h = v.getMeasuredHeight() + ADDITIONAL_H;
+                w = ((h - PADDING * 2) * ratio) + PADDING * 2;
                 setMeasuredDimension((int) w, (int) h);
             }
 

@@ -37,8 +37,8 @@ public class Power extends Expression {
         float f = SCALE_START;
 
         // visualize base and measure its height
-        final View b;
-        b = base.visualize(vctx).getView();
+        final ExpressionView bev = base.visualize(vctx);
+        final View b = bev.getView();
         b.measure(-2, -2);
         final int bh = b.getMeasuredHeight();
 
@@ -55,21 +55,26 @@ public class Power extends Expression {
         // determine space height
         final int sh = bh > ph ? bh - ph : (int) (bh * SCALE_END);
 
+        // determine resting Y
+        final float restingY = bev.getRestingY() + sh + ph - bh;
+
         // create the space below power
-        final Space s;
-        s = new Space(vctx.androidContext);
+        final Space s = new Space(vctx.androidContext);
         s.setMinimumHeight(sh);
 
         // create the right side layout with power and its space
-        final LinearLayout r;
-        r = new LinearLayout(vctx.androidContext);
+        final LinearLayout r = new LinearLayout(vctx.androidContext);
         r.setOrientation(LinearLayout.VERTICAL);
         r.addView(p);
         r.addView(s);
 
         // create the total layout with base and the right side
-        final Layout v;
-        v = new Layout(vctx);
+        final Layout v = new Layout(vctx) {
+            @Override
+            public float getRestingY() {
+                return restingY;
+            }
+        };
         v.setGravity(Gravity.BOTTOM);
         v.addView(b);
         v.addView(r);

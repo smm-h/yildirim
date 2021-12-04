@@ -1,7 +1,9 @@
 package ir.smmh.gebra;
 
 import android.content.Context;
+import android.widget.Space;
 
+import ir.smmh.fy.Util;
 import ir.smmh.fy.code.TabView;
 import ir.smmh.gebra.expressions.DoubleValue;
 import ir.smmh.gebra.expressions.Fraction;
@@ -15,35 +17,36 @@ import ir.smmh.gebra.expressions.Variable;
 
 public class GebraTabView extends TabView {
 
-    final Expression ONE = d(1);
+    final EvaluationContext ectx;
+    final VisualizationContext vctx;
 
     public GebraTabView(final Context context) {
         super(context);
+        ectx = new EvaluationContext.Default();
+        vctx = new VisualizationContext(context, 1);
 
-        VisualizationContext vctx = new VisualizationContext(context, 1);
+        add("Welcome to Gebra!");
+        add(s(d(4), frac(d(10), d(5))));
+        add(fracR(5));
+        add(s(p(d(2), pow(v("alpha"), s(d(2), v("pi")))), neg(p(d(3), v("beta"))), v("epsilon")));
+        add(root(d(25), d(2)));
+        add(s(d(1), d(2), d(3), d(4)));
+        add(p(d(1), d(2), d(3), d(4)));
+        add("More coming soon!");
+    }
 
-        // addView(new Text(vctx, "Hello, world!"));
+    void add(String text) {
+        addView(new Text(vctx, text));
+    }
 
-        EvaluationContext ectx = new EvaluationContext.Default();
-
-        // Expression e = frac(d(10), d(5));
-        Expression e = fracR(5);
-        Expression e2 = s(p(d(2), pow(v("alpha"), s(d(2), v("pi")))), neg(p(d(3), v("beta"))), v(
-            "epsilon"));
-        // Expression e = root(d(25), d(2));
+    void add(Expression e) {
+        Space p = new Space(getContext());
+        Space q = new Space(getContext());
+        p.setMinimumHeight(Util.dipToPixel(8));
+        q.setMinimumHeight(Util.dipToPixel(8));
+        addView(p);
         addView(e.getEvaluation(ectx).visualize(vctx));
-
-        // Expression e = new Variable("alpha");
-        // addView(e.getEvaluation(ectx).visualize(context));
-
-        // MultiaryOperation e = new Production();
-        //
-        // e.addTerm(new DoubleValue(1));
-        // e.addTerm(new DoubleValue(2));
-        // e.addTerm(new DoubleValue(3));
-        // e.addTerm(new DoubleValue(4));
-        //
-        // addView(e.getEvaluation(ectx).visualize(context));
+        addView(q);
     }
 
     Expression d(Number n) {
@@ -85,7 +88,7 @@ public class GebraTabView extends TabView {
     }
 
     Expression fracR(int depth) {
-        return depth > 0 ? s(ONE, frac(ONE, fracR(depth - 1))) : ONE;
+        return depth > 0 ? s(Gebra._1, frac(Gebra._1, fracR(depth - 1))) : Gebra._1;
     }
 
 }

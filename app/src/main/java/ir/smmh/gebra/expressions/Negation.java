@@ -20,9 +20,9 @@ public class Negation extends Expression {
 
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
-        Layout v = new Layout(vctx);
-        v.addView(new Symbol(vctx, "-"));
-        v.addView(operand.visualize(vctx).getView());
-        return v;
+        final ListLayout layout = new ListLayout(vctx);
+        layout.addView(new Symbol(vctx, "-"));
+        layout.addView(operand.visualize(vctx).getView());
+        return layout;
     }
 }
