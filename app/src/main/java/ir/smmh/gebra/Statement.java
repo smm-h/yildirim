@@ -38,10 +38,10 @@ public abstract class Statement {
     }
 
     private Status status = Status.NOT_EXECUTED_YET;
-    public final EvaluationContext ectx;
+    public final Namespace ns;
 
-    public Statement(final EvaluationContext ectx) {
-        this.ectx = ectx;
+    public Statement(final Namespace ns) {
+        this.ns = ns;
     }
 
     public abstract Status execute(@Nullable StatementView sv);
@@ -54,11 +54,12 @@ public abstract class Statement {
         protected static final int STATUS_BAR_MARGIN = Util.dipToPixel(8);
 
         private final Paint paint;
-
         public final Statement core;
+        protected final VisualizationContext visualizationContext;
 
         public StatementView(final VisualizationContext vctx, final Statement core) {
             super(vctx.androidContext);
+            this.visualizationContext = vctx;
             this.core = core;
             setWillNotDraw(false);
             setLayoutParams(Gebra.WRAP_BOTH);

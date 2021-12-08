@@ -6,23 +6,23 @@ import android.widget.Space;
 import ir.smmh.fy.Util;
 import ir.smmh.fy.code.TabView;
 import ir.smmh.gebra.expressions.DoubleValue;
-import ir.smmh.gebra.expressions.Fraction;
+import ir.smmh.gebra.expressionviews.FractionView;
 import ir.smmh.gebra.expressions.Negation;
-import ir.smmh.gebra.expressions.Power;
+import ir.smmh.gebra.expressions.Exponentiation;
 import ir.smmh.gebra.expressions.Production;
 import ir.smmh.gebra.expressions.Root;
 import ir.smmh.gebra.expressions.Summation;
-import ir.smmh.gebra.expressions.Text;
+import ir.smmh.gebra.expressionviews.Text;
 import ir.smmh.gebra.expressions.Variable;
 
 public class GebraTabView extends TabView {
 
-    final EvaluationContext ectx;
+    final GebraDocument doc;
     final VisualizationContext vctx;
 
     public GebraTabView(final Context context) {
         super(context);
-        ectx = new EvaluationContext.Default();
+        doc = new GebraDocument();
         vctx = new VisualizationContext(context, 1);
 
         add("Welcome to Gebra!");
@@ -41,12 +41,12 @@ public class GebraTabView extends TabView {
     }
 
     void add(Expression e) {
-        Space p = new Space(getContext());
-        Space q = new Space(getContext());
+        final Space p = new Space(getContext());
+        final Space q = new Space(getContext());
         p.setMinimumHeight(Util.dipToPixel(8));
         q.setMinimumHeight(Util.dipToPixel(8));
         addView(p);
-        addView(e.getEvaluation(ectx).visualize(vctx));
+        addView(e.getEvaluation(doc.ns).visualize(vctx));
         addView(q);
     }
 
@@ -59,21 +59,15 @@ public class GebraTabView extends TabView {
     }
 
     Expression s(Expression... args) {
-        Summation e = new Summation();
-        for (Expression arg : args)
-            e.addTerm(arg);
-        return e;
+        return new Summation(args);
     }
 
     Expression p(Expression... args) {
-        Production e = new Production();
-        for (Expression arg : args)
-            e.addTerm(arg);
-        return e;
+        return new Production(args);
     }
 
     Expression pow(Expression b, Expression p) {
-        return new Power(b, p);
+        return new Exponentiation(b, p);
     }
 
     Expression root(Expression b, Expression p) {
@@ -85,7 +79,7 @@ public class GebraTabView extends TabView {
     }
 
     Expression frac(Expression p, Expression q) {
-        return new Fraction(p, q);
+        return new FractionView(p, q);
     }
 
     Expression fracR(int depth) {

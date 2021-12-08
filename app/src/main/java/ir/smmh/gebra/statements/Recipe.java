@@ -2,33 +2,33 @@ package ir.smmh.gebra.statements;
 
 import android.graphics.Color;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
 
 import ir.smmh.fy.Util;
-import ir.smmh.gebra.EvaluationContext;
-import ir.smmh.gebra.EvaluationError;
+import ir.smmh.gebra.errors.EvaluationError;
 import ir.smmh.gebra.Expression;
+import ir.smmh.gebra.Namespace;
 import ir.smmh.gebra.Statement;
 import ir.smmh.gebra.VisualizationContext;
-import ir.smmh.gebra.expressions.DoubleValue;
-import ir.smmh.gebra.expressions.Symbol;
+import ir.smmh.gebra.expressionviews.Symbol;
 
 public class Recipe extends Statement {
 
     public final Expression expression;
 
-    public Recipe(final EvaluationContext ectx, final Expression expression) {
-        super(ectx);
+    public Recipe(final Namespace ns, final Expression expression) {
+        super(ns);
         this.expression = expression;
     }
 
     @Override
     public Status execute(final StatementView sv) {
         Status status;
-        String answer = "?";
+        Expression answer = null;
         try {
-            answer = DoubleValue.toText(expression.evaluate(ectx));
+            answer = expression.evaluate(ns);
             status = Status.NO_ERROR;
         } catch (EvaluationError ee) {
             status = Status.EVAL_ERROR;
@@ -39,7 +39,7 @@ public class Recipe extends Statement {
         }
         if (sv != null) {
             final RecipeView v = (RecipeView) sv;
-            v.answer.setText(answer);
+            v.setAnswer(answer);
             // v.relationSymbol.setText("=");
         }
         return status;
@@ -52,8 +52,7 @@ public class Recipe extends Statement {
 
     public static class RecipeView extends StatementView {
 
-        private final TextView relationSymbol;
-        private final TextView answer;
+        private final LinearLayout answer;
 
         public RecipeView(final VisualizationContext vctx, final Recipe core) {
             super(vctx, core);
@@ -63,16 +62,28 @@ public class Recipe extends Statement {
 
             final View expressionVisualized = core.expression.visualize(vctx).getView();
 
-            relationSymbol = new Symbol(vctx, "=");
-            relationSymbol.setTextColor(Color.GRAY);
-
-            answer = new Symbol(vctx, "?");
-            answer.setTextColor(Color.GRAY);
-
             addView(space);
             addView(expressionVisualized);
-            addView(relationSymbol);
-            addView(answer);
+            addView(answer = new LinearLayout(vctx.androidContext));
+        }
+
+        public void setAnswer(Expression expression) {
+
+            final View output;
+            final TextView relationSymbol = new Symbol(visualizationContext, "=");
+
+            if (expression == null) {
+                final TextView questionMark = new Symbol(visualizationContext, "?");
+                questionMark.setTextColor(Color.GRAY);
+                relationSymbol.setTextColor(Color.GRAY);
+                output = questionMark;
+            } else {
+                output = expression.visualize(visualizationContext).getView();
+            }
+
+            answer.removeAllViews();
+            answer.addView(relationSymbol);
+            answer.addView(output);
         }
     }
 }

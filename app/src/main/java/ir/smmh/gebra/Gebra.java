@@ -1,6 +1,5 @@
 package ir.smmh.gebra;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.widget.LinearLayout;
 
@@ -12,7 +11,7 @@ import ir.smmh.gebra.expressions.DoubleValue;
  * @see Expression +
  * @see Statement +
  * @see Symbols
- * @see EvaluationContext
+ * @see Namespace
  * @see GebraTab
  * @see GebraTabView
  */

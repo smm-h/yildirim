@@ -2,33 +2,54 @@ package ir.smmh.gebra.expressions;
 
 import android.view.View;
 
-import ir.smmh.gebra.EvaluationContext;
-import ir.smmh.gebra.EvaluationError;
+import androidx.annotation.NonNull;
+
+import ir.smmh.gebra.errors.EvaluationError;
 import ir.smmh.gebra.Expression;
+import ir.smmh.gebra.errors.InferenceError;
+import ir.smmh.gebra.Namespace;
+
+import ir.smmh.gebra.Type;
 import ir.smmh.gebra.VisualizationContext;
+import ir.smmh.gebra.expressionviews.SequentialView;
+import ir.smmh.gebra.expressionviews.Symbol;
+import ir.smmh.gebra.operations.Addition;
 
 public class Summation extends Expression {
 
+    public Summation(Expression... terms) {
+        super(terms);
+    }
+
+    @NonNull
     @Override
-    public double evaluate(EvaluationContext ectx) throws EvaluationError {
-        double sum = 0;
-        for (Expression e : children) {
-            sum += e.evaluate(ectx);
+    public Type inferType(@NonNull final Namespace ns) throws InferenceError {
+        Type t = subexpressions[0].inferType(ns);
+        for (int i = 1; i < subexpressions.length; i++) {
+            if (t == null) {
+                return null;
+            }
+            t = Addition.infer(t, subexpressions[i].inferType(ns));
+        }
+        return t;
+    }
+
+    @Override
+    public Expression evaluate(@NonNull final Namespace ns) throws EvaluationError {
+        Expression sum = DoubleValue.ZERO;
+        for (Expression e : subexpressions) {
+            sum += e.evaluate(ns);
         }
         return sum;
     }
 
-    public void addTerm(Expression e) {
-        children.add(e);
-    }
-
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
-        final ListLayout layout = new ListLayout(vctx);
+        final SequentialView layout = new SequentialView(vctx);
         boolean firstTime = true;
-        for (final Expression expression : children) {
+        for (final Expression expression : subexpressions) {
             final boolean n = expression instanceof Negation;
-            View view = (n ? ((Negation) expression).operand : expression).visualize(vctx).getView();
+            View view = (n ? ((Negation) expression).core : expression).visualize(vctx).getView();
             if (firstTime) {
                 firstTime = false;
             } else {

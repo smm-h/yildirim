@@ -1,34 +1,71 @@
 package ir.smmh.gebra.expressions;
 
-import ir.smmh.gebra.EvaluationContext;
-import ir.smmh.gebra.EvaluationError;
+import androidx.annotation.NonNull;
+
+import ir.smmh.gebra.errors.EvaluationError;
 import ir.smmh.gebra.Expression;
+import ir.smmh.gebra.errors.InferenceError;
+import ir.smmh.gebra.Namespace;
+import ir.smmh.gebra.Type;
+import ir.smmh.gebra.Value;
 import ir.smmh.gebra.VisualizationContext;
+import ir.smmh.gebra.expressionviews.Symbol;
+import ir.smmh.gebra.ontologies.Numbers;
 
-public final class DoubleValue extends Expression {
+public final class DoubleValue extends Expression implements Value<Double> {
+
     private final double value;
+    private final @NonNull
+    Type type;
 
-    public DoubleValue(final double value) {
+    private DoubleValue(final double value, @NonNull final Type type) {
+        super(new Expression[0]);
         this.value = value;
+        this.type = type;
     }
 
     @Override
-    public double evaluate(final EvaluationContext ectx) throws EvaluationError {
+    public Double getValue() {
         return value;
     }
 
+    public static DoubleValue of(final double value)  {
+        return new DoubleValue(value, DoubleValue.inferType(value));
+    }
+
+    public static DoubleValue of(final int value) {
+        return new DoubleValue(value, DoubleValue.inferType(value));
+    }
+
+    @NonNull
     @Override
-    public boolean isSimple() {
-        return true;
+    public Type inferType(@NonNull final Namespace ns) {
+        return type;
+    }
+    @NonNull
+    public static Type inferType(final double value) {
+        if (Double.isNaN(value)) {
+            throw new IllegalArgumentException("value cannot be NaN");
+        } else if (Math.round(value) == value) {
+            return inferType((int) value);
+        } else {
+            return Numbers.REAL;
+        }
+    }
+    @NonNull
+    public static Type inferType(final int value) {
+        return value >= 0 ? Numbers.NATURAL : Numbers.INTEGER;
+    }
+
+    @NonNull
+    @Override
+    public Expression evaluate(@NonNull final Namespace ns) throws EvaluationError {
+        return this;
     }
 
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
-        return new Symbol(vctx, DoubleValue.toText(value));
-    }
-
-    public static String toText(double value) {
-        return Math.round(value) == value ? Long.toString((long) value) : Double.toString(value);
+        return new Symbol(vctx, Math.round(value) == value ? Long.toString((long) value) : Double.toString(value));
     }
 
     @Override

@@ -1,101 +1,73 @@
 package ir.smmh.gebra.expressions;
 
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.view.View;
-import android.widget.LinearLayout;
+import androidx.annotation.NonNull;
 
-import ir.smmh.fy.R;
-import ir.smmh.fy.Util;
-import ir.smmh.gebra.EvaluationContext;
-import ir.smmh.gebra.EvaluationError;
 import ir.smmh.gebra.Expression;
-import ir.smmh.gebra.Gebra;
+import ir.smmh.gebra.Namespace;
+import ir.smmh.gebra.Type;
 import ir.smmh.gebra.VisualizationContext;
+import ir.smmh.gebra.errors.EvaluationError;
+import ir.smmh.gebra.errors.InferenceError;
+import ir.smmh.gebra.expressionviews.FractionView;
 
 public class Fraction extends Expression {
 
-    private final Expression p, q;
+    private Fraction(final Expression numerator, final Expression denominator) {
+        super(new Expression[] {numerator, denominator});
+    }
 
-    public Fraction(final Expression p, final Expression q) {
-        this.p = p;
-        this.q = q;
-        children.add(p);
-        children.add(q);
+    public Expression getNumerator() {
+        return subexpressions[0];
+    }
+
+    public Expression getDenominator() {
+        return subexpressions[1];
+    }
+
+    public static Fraction of(@NonNull final Expression numerator, @NonNull final Expression denominator) {
+        return new Fraction(numerator, denominator);
     }
 
     @Override
-    public double evaluate(final EvaluationContext ectx) throws EvaluationError {
-        return p.evaluate(ectx) / q.evaluate(ectx);
-        // double qv = q.evaluate(ectx);
-        // if (qv == 0) {
-        //     throw new EvaluationError("Cannot divide by zero");
-        // } else {
-        //     return p.evaluate(ectx) / qv;
-        // }
+    public Expression negate() {
+        return of(getNumerator().negate(), getDenominator());
     }
 
-    private static final int HR_HEIGHT, HR_ADDITIONAL_WIDTH;
-    // private static final LinearLayout.LayoutParams HR_LP;
-
-    static {
-        HR_ADDITIONAL_WIDTH = Util.dipToPixel(12);
-        HR_HEIGHT = Util.dipToPixel(4);
-        // HR_LP = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, HR_HEIGHT);
+    @Override
+    public Expression reciprocal() {
+        return of(getDenominator(), getNumerator());
     }
 
-    private static class HorizontalRule extends View {
+    @NonNull
+    @Override
+    public Type inferType(@NonNull final Namespace ns) throws InferenceError {
+        final Type n = getNumerator().inferType(ns);
+        final Type d = getDenominator().inferType(ns);
+    }
 
-        private final int w;
-
-        public HorizontalRule(final Context context, final int width) {
-            super(context);
-            // setLayoutParams(HR_LP);
-            w = width + HR_ADDITIONAL_WIDTH;
-            // setLayoutParams(new LinearLayout.LayoutParams(-1, -1));
-            // setLayoutParams(new LinearLayout.LayoutParams(w, HR_HEIGHT));
-            setLayoutParams(Gebra.WRAP_BOTH);
-            // setMinimumWidth(w);
-            // setMinimumHeight(HR_HEIGHT);
-        }
-
-        @Override
-        protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-            setMeasuredDimension(w, HR_HEIGHT);
-        }
-
-        @Override
-        protected void onDraw(final Canvas canvas) {
-            final float x = HR_ADDITIONAL_WIDTH / 4f;
-            final float y = HR_HEIGHT / 2f;
-            canvas.drawLine(x, y, w - x, y, Gebra.PAINT);
+    @NonNull
+    @Override
+    public Expression evaluate(@NonNull final Namespace ns) throws EvaluationError {
+        final Expression n = getNumerator().evaluate(ns);
+        final Expression d = getDenominator().evaluate(ns);
+        if (d.equals(DoubleValue.ZERO)) {
+            throw new EvaluationError("Cannot divide by zero");
+        } else {
+            return DoubleValue.of(n / d);
         }
     }
 
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
+        return new FractionView(vctx, this);
+    }
 
-        View pv = p.visualize(vctx).getView();
-        View qv = q.visualize(vctx).getView();
+    public Fraction add(@NonNull final Fraction other) {
+        final Expression q2 = other.getDenominator();
+        return of(getNumerator().multiply(q2).add(other.getNumerator().multiply(getDenominator())), getDenominator().multiply(q2));
+    }
 
-        pv.measure(-2, -2);
-        qv.measure(-2, -2);
-        int mw = Math.max(pv.getMeasuredWidth(), qv.getMeasuredWidth());
-        HorizontalRule hr = new HorizontalRule(vctx.androidContext, mw);
-
-        final float restingY = pv.getMeasuredHeight() + HR_HEIGHT / 2f;
-        final Layout v = new Layout(vctx) {
-            @Override
-            public float getRestingY() {
-                return restingY;
-            }
-        };
-        v.setOrientation(LinearLayout.VERTICAL);
-        v.addView(pv);
-        v.addView(hr);
-        v.addView(qv);
-
-        return v;
+    public Fraction multiply(@NonNull final Fraction other) {
+        return of(getNumerator().multiply(other.getNumerator()), getDenominator().multiply(other.getDenominator()));
     }
 }

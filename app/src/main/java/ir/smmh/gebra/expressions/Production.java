@@ -1,31 +1,30 @@
 package ir.smmh.gebra.expressions;
 
-import ir.smmh.gebra.EvaluationContext;
-import ir.smmh.gebra.EvaluationError;
+import androidx.annotation.NonNull;
+
+import ir.smmh.gebra.Namespace;
+import ir.smmh.gebra.errors.EvaluationError;
 import ir.smmh.gebra.Expression;
 import ir.smmh.gebra.VisualizationContext;
+import ir.smmh.gebra.expressionviews.SequentialView;
 
 public class Production extends Expression {
 
+    public Production(Expression... terms) {
+        super(terms);
+    }
+
     @Override
-    public double evaluate(EvaluationContext ectx) throws EvaluationError {
+    public Expression evaluate(@NonNull final Namespace ns) throws EvaluationError {
         double product = 1;
-        for (Expression e : children) {
-            product *= e.evaluate(ectx);
+        for (Expression e : subexpressions) {
+            product *= e.evaluate(ns);
         }
         return product;
     }
 
-    public void addTerm(Expression e) {
-        children.add(e);
-    }
-
     @Override
     public ExpressionView visualize(final VisualizationContext vctx) {
-        ListLayout layout = new ListLayout(vctx);
-        for (Expression expression : children) {
-            layout.addView(expression.visualize(vctx).getView());
-        }
-        return layout;
+        return new SequentialView(vctx, subexpressions);
     }
 }
